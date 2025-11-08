@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로컬 R&D 원가 최적화 코치 | 기술을 수익으로</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: #ffffff;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e8eef3;
+            padding: 1rem 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 71, 171, 0.05);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+            padding: 0 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #0047AB;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        nav a:hover {
+            background: #f0f6ff;
+            color: #FF8C00;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #003d99 0%, #0052cc 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 0, 0, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.1) 0%, transparent 50%);
+            opacity: 0.6;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero h2 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #ffffff;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-highlight {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff7700 0%, #ff9f1a 100%);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            margin: 0 0.5rem;
+            box-shadow: 0 4px 20px rgba(255, 119, 0, 0.5);
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Section */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        section:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #0047AB;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #5a6c7d;
+            text-align: center;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        /* Problem Section */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .problem-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            border-left: 5px solid #FF8C00;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0, 71, 171, 0.15);
+        }
+
+        .problem-card h3 {
+            color: #0047AB;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .problem-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Solution Section */
+        .solution-box {
+            background: linear-gradient(135deg, #0047AB 0%, #0066cc 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 16px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0, 71, 171, 0.2);
+        }
+
+        .solution-box h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .solution-points {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .solution-point {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .solution-point-icon {
+            background: #FF8C00;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Benefits Table */
+        .benefits-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 71, 171, 0.1);
+            margin-top: 2rem;
+        }
+
+        .benefits-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .benefits-table th {
+            background: #0047AB;
+            color: white;
+            padding: 1.5rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .benefits-table td {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e8eef3;
+        }
+
+        .benefits-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .benefits-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .benefit-number {
+            background: #FF8C00;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        /* Trust Section */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .trust-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 71, 171, 0.08);
+        }
+
+        .trust-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .trust-card h3 {
+            color: #0047AB;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Pricing Section */
+        .pricing-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 71, 171, 0.15);
+            border: 3px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: #FF8C00;
+            color: white;
+            padding: 0.5rem 3rem;
+            transform: rotate(45deg);
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-title {
+            font-size: 2rem;
+            color: #0047AB;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .price-box {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+        .price-box.special {
+            background: linear-gradient(135deg, #FF8C00 0%, #ff9f1a 100%);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+        }
+
+        .price-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 1rem 0;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            opacity: 0.6;
+            font-size: 1.5rem;
+        }
+
+        .pricing-details {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .pricing-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pricing-details li {
+            padding: 0.8rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .pricing-details li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #FF8C00;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .limited-offer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #fff3e0;
+            border-radius: 12px;
+            border: 2px dashed #FF8C00;
+        }
+
+        .limited-offer strong {
+            color: #FF8C00;
+            font-size: 1.3rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #0047AB 0%, #0066cc 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .cta-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #FF8C00;
+            color: white;
+            padding: 1.5rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 140, 0, 0.5);
+            background: #ff9f1a;
+        }
+
+        .cta-note {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero h2 {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .pricing-compare {
+                grid-template-columns: 1fr;
+            }
+
+            .price-box.special {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="#problem">문제</a></li>
+            <li><a href="#solution">솔루션</a></li>
+            <li><a href="#benefits">혜택</a></li>
+            <li><a href="#trust">신뢰</a></li>
+            <li><a href="#pricing">가격</a></li>
+            <li><a href="#cta">신청</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>R&D 비용, 성장의 발목이 되셨습니까?</h1>
+            <h2>
+                <span class="hero-highlight">로컬 R&D 원가 최적화 코치:</span><br>
+                지역 스타트업/중소기업을 위한<br>
+                기술 경쟁력 강화 및 순이익 극대화 솔루션
+            </h2>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problem">
+        <div class="container">
+            <h2 class="section-title">혁신을 위한 투자가, 왜 재정 부담으로 돌아옵니까?</h2>
+            <p class="section-subtitle">
+                대전 지역의 기술 기반 스타트업 및 중소기업은 혁신적인 R&D에 막대한 시간과 자본을 투자합니다.<br>
+                하지만 성공적인 기술 개발 후에도 다음과 같은 근본적인 문제에 직면합니다.
+            </p>
+
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">🔍</div>
+                    <h3>기술의 원가 불명확성</h3>
+                    <p>개발된 신기술 및 제품에 대한 <strong>정확한 원가 산정 구조 파악 불가.</strong> 어디서 비용이 새는지 알 수 없어 최적화가 불가능합니다.</p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-icon">📉</div>
+                    <h3>시장 경쟁력 약화</h3>
+                    <p>비효율적인 원가 구조로 인해 <strong>가격 경쟁력이 낮아져</strong> 시장 진입에 어려움을 겪습니다.</p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-icon">💸</div>
+                    <h3>투자 대비 성과 부진</h3>
+                    <p>R&D 투자금 대비 <strong>실제 순이익으로 전환되는 비율이 미미.</strong> 좋은 기술이 수익으로 연결되지 않습니다.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: #fff3e0; border-radius: 12px;">
+                <strong style="font-size: 1.3rem; color: #FF8C00;">결론:</strong>
+                <p style="font-size: 1.2rem; margin-top: 1rem; color: #2c3e50;">
+                    투자한 기술력은 최고지만, 재무적 비효율성 때문에 <strong>성장의 속도가 늦춰지고 있습니다.</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution">
+        <div class="container">
+            <h2 class="section-title">로컬 R&D 원가 최적화 코치와 함께,<br>R&D를 '비용'이 아닌 '수익'으로 만드세요</h2>
+
+            <div class="solution-box">
+                <h3>핵심 가치 제안</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    지역 경제 및 기술 환경에 대한 깊은 이해를 바탕으로, 귀사의 <strong>기술(R&D)과 회계(원가)</strong> 사이의 미싱 링크를 연결합니다.
+                </p>
+
+                <div class="solution-points">
+                    <div class="solution-point">
+                        <div class="solution-point-icon">1</div>
+                        <div>
+                            <h4 style="margin-bottom: 0.5rem;">지역 연계형 전문성</h4>
+                            <p>지역 내 중소기업 관련 센터와의 연계를 통해 지역 특화 정보를 반영한 맞춤형 솔루션 제공</p>
+                        </div>
+                    </div>
+
+                    <div class="solution-point">
+                        <div class="solution-point-icon">2</div>
+                        <div>
+                            <h4 style="margin-bottom: 0.5rem;">출장형 초기 원가 진단</h4>
+                            <p>여러 기업과의 미팅을 통해 얻은 실질적인 데이터를 바탕으로 현장에서 바로 적용 가능한 원가 진단 수행</p>
+                        </div>
+                    </div>
+
+                    <div class="solution-point">
+                        <div class="solution-point-icon">3</div>
+                        <div>
+                            <h4 style="margin-bottom: 0.5rem;">전체 R&D 공정 분석</h4>
+                            <p>단순한 컨설팅을 넘어, 숨겨진 비용 비효율 요소를 정확히 찾아내고 순이익을 극대화하는 최적화 솔루션</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits">
+        <div class="container">
+            <h2 class="section-title">3가지 핵심 혜택: 순이익을 바꾸는 실질적인 변화</h2>
+
+            <div class="benefits-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>혜택</th>
+                            <th>기능/서비스</th>
+                            <th>기업이 얻는 실질적 이익</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="benefit-number">1</span></td>
+                            <td><strong>'기술-회계' 연계 진단 시스템</strong></td>
+                            <td><strong style="color: #FF8C00;">숨겨진 원가 15% 절감</strong> 및 제품/기술별 정확한 수익성 분석 기반 마련</td>
+                        </tr>
+                        <tr>
+                            <td><span class="benefit-number">2</span></td>
+                            <td><strong>경영진 맞춤형 리포트 제공</strong></td>
+                            <td>복잡한 원가 구조를 경영 의사결정에 즉시 활용 가능한 <strong style="color: #FF8C00;">Actionable Data</strong>로 전환</td>
+                        </tr>
+                        <tr>
+                            <td><span class="benefit-number">3</span></td>
+                            <td><strong>지역 연계 성장 로드맵 구축</strong></td>
+                            <td>원가 최적화 데이터를 기반으로 지역 내 협력 기관과 연계하여 <strong style="color: #FF8C00;">정부 지원 사업 및 투자 유치 준비</strong> 지원</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section id="trust">
+        <div class="container">
+            <h2 class="section-title">검증된 전문성과 지역 인프라의 결합</h2>
+            <p class="section-subtitle">
+                우리의 서비스는 이론에 머물지 않습니다.<br>
+                지역 내 기업의 성장에 실질적으로 기여하는 것을 목표로 합니다.
+            </p>
+
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-icon">✅</div>
+                    <h3>MVP 검증</h3>
+                    <p>초기 '출장형 원가 진단 컨설팅'을 통해 대전 지역 스타트업 및 중소기업의 실제 원가 데이터를 확보하고 솔루션의 효과를 입증</p>
+                </div>
+
+                <div class="trust-card">
+                    <div class="trust-icon">🤝</div>
+                    <h3>협력 기관</h3>
+                    <p>지역 내 중소기업 관련 센터와의 긴밀한 협력을 통해, 최신 지역 정책 및 자금 지원 정보를 반영한 컨설팅 제공</p>
+                </div>
+
+                <div class="trust-card">
+                    <div class="trust-icon">🎯</div>
+                    <h3>장기적 목표</h3>
+                    <p>단발성 컨설팅이 아닌, 지역 기업의 정주 기반 확고화에 기여하여 지역 경제 활성화의 중심축 역할 수행</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing">
+        <div class="container">
+            <h2 class="section-title">[베타 테스터] 한정 특별 오퍼</h2>
+            <p class="section-subtitle">
+                솔루션의 완성도를 높이기 위해, 성장에 대한 의지가 확실한 초기 파트너 기업을 모집합니다.
+            </p>
+
+            <div class="pricing-container">
+                <div class="pricing-card">
+                    <div class="pricing-badge">50% 할인</div>
+                    
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">초기 원가 진단 컨설팅 (1회, 출장형)</h3>
+                    </div>
+
+                    <div class="pricing-compare">
+                        <div class="price-box">
+                            <div class="price-label">정가</div>
+                            <div class="price price-old">₩3,000,000</div>
+                        </div>
+                        <div class="price-box special">
+                            <div class="price-label">베타 테스터 특별가</div>
+                            <div class="price">₩1,500,000</div>
+                        </div>
+                    </div>
+
+                    <div class="pricing-details">
+                        <h4 style="color: #0047AB; margin-bottom: 1rem; font-size: 1.2rem;">제공 내역</h4>
+                        <ul>
+                            <li>R&D 공정 전체 분석</li>
+                            <li>핵심 원가 비효율 지점 진단</li>
+                            <li>1:1 심층 보고서 제공</li>
+                            <li>실행 가능한 개선 방향 제시</li>
+                            <li>지역 지원 사업 연계 가이드</li>
+                        </ul>
+                    </div>
+
+                    <div class="limited-offer">
+                        <strong>⏰ 선착순 5개 기업 한정!</strong>
+                        <p style="margin-top: 0.5rem;">이 기회를 통해 귀사의 R&D를 고수익 사업 구조로 전환하십시오.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="cta" class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">더 이상 R&D 비용 때문에 성장을 망설이지 마십시오</h2>
+            <p class="cta-subtitle">
+                귀사의 혁신적인 기술이 재무적 비효율로 빛을 잃지 않도록,<br>
+                지금 바로 가장 효율적인 성장 로드맵을 설계하세요.
+            </p>
+            <p style="font-size: 1.3rem; margin-bottom: 2rem; font-weight: 600;">
+                클릭 한 번으로, 귀사의 순이익 구조가 바뀝니다.
+            </p>
+            <button class="cta-button" onclick="alert('베타 테스터 신청서 페이지로 연결됩니다.\n\n실제 서비스에서는 신청 양식이나 연락처 페이지로 연결됩니다.')">
+                🚀 선착순 베타 테스터 신청하고 50% 할인 혜택 받기
+            </button>
+            <p class="cta-note">
+                *신청서 작성 후 24시간 이내 전문 코치가 상담 일정을 조율해 드립니다.
+            </p>
+        </div>
+    </section>
+
+</body>
+</html>
